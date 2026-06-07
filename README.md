@@ -1,4 +1,4 @@
-<h1 align='center'>Backend</h1>
+<h1 align='center'>Backend Documentation</h1>
 <br>
 
 <h2>Technologies</h2>
@@ -71,6 +71,12 @@
   </li>
   <li>
     Barrel files centralize exports, ensuring consistent and straightforward access to modules within each layer.
+  </li>
+  <li>
+    Modular Routing — API routes are organized into domain‑specific modules, each encapsulating a distinct functional area to keep the routing layer clean, predictable, and easy to extend.
+  </li>
+  <li>
+    Centralized Error Handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses, providing uniform and human‑readable outputs.
   </li>
 </ul>
 
