@@ -73,10 +73,13 @@
     Barrel files centralize exports, ensuring consistent and straightforward access to modules within each layer.
   </li>
   <li>
-    Modular Routing — API routes are organized into domain‑specific modules, grouping related endpoints to keep the routing layer clean, predictable, and easy to extend.
+    Modular Routing — API routes are grouped into distinct modules based on their domain, keeping related endpoints together and the routing layer clean and scalable.
   </li>
   <li>
     Centralized Error Handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses, providing uniform and human‑readable outputs.
+  </li>
+  <li>
+    The overall structure ensures predictable module boundaries, maintainable code organization, and a clean separation between infrastructure, domain logic, and request handling.
   </li>
 </ul>
 
