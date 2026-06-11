@@ -78,9 +78,6 @@
   <li>
     Centralized Error Handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses, providing uniform and human‑readable outputs.
   </li>
-  <li>
-    The overall structure ensures predictable module boundaries, maintainable code organization, and a clean separation between infrastructure, domain logic, and request handling.
-  </li>
 </ul>
 
 <h2>Auth & Session Management</h2>
