@@ -95,19 +95,23 @@
     Layer 1: Request validation — all incoming client input (body, query, params) is validated through a centralized and dynamic Joi schema system, acting as the first layer of protection and rejecting invalid or incomplete data before it reaches the business logic.
   </li>
   <li>
-    Layer 2: Database validation —
+    Layer 2: Database validation — Mongoose model‑level rules add an additional protection layer that guarantees data integrity through strict constraints, enums, conditional requirements, custom validators and type‑safe limits, preventing invalid or inconsistent records from ever being persisted.
+  </li>
+</ul>
+
+<h2>Data Model</h2>
+<ul>
+  <li>
+    Controlled output shaping — Mongoose schemas apply custom serialization rules to ensure that only intended fields are exposed in API responses, while sensitive or internal data is omitted.
+  </li>
+  <li>
+    Data expiration — Time‑sensitive records are automatically removed via MongoDB TTL indexes, ensuring clean, up‑to‑date storage without any manual maintenance.
   </li>
 </ul>
 
 <h2>Other Details</h2>
 <ul>
   <li>
-    Environment guard — env variables are strictly validated at startup to prevent the server from running with missing or invalid configuration.
-  </li>
-  <li>
-    Controlled output shaping — Mongoose schemas apply custom serialization rules to ensure that only intended fields are exposed in API responses, while sensitive or internal data is omitted.
-  </li>
-  <li>
-    Data expiration — Time‑sensitive records are automatically removed via MongoDB TTL indexes, ensuring clean, up‑to‑date storage without any manual maintenance.
+    Environment guard — all environment variables are strictly validated at startup, preventing the server from running with missing or invalid configuration.
   </li>
 </ul>
