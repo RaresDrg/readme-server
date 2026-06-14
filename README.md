@@ -111,7 +111,7 @@
     Cross‑model relationships — references between models support relational consistency and enable cross‑entity access to connected data.
   </li>
   <li>
-     Controlled output shaping — custom serialization rules ensure that only intended fields are exposed in API responses, omitting sensitive or internal data.
+    Controlled output shaping — custom serialization rules ensure that only intended fields are exposed in API responses, omitting sensitive or internal data.
   </li>
   <li>
     Data expiration — time‑sensitive records are automatically removed using TTL indexes, keeping the database clean and storage‑efficient.
@@ -125,5 +125,8 @@
 <ul>
   <li>
     Environment guard — all environment variables are strictly validated at startup, preventing the server from running with missing or invalid configuration.
+  </li>
+  <li>
+    Cursor‑based pagination — the API benefits from a cursor‑driven approach that keeps pagination stable and predictable as the dataset evolves, providing a more reliable way to navigate the data.
   </li>
 </ul>
