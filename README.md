@@ -102,10 +102,19 @@
 <h2>Data Model</h2>
 <ul>
   <li>
-    Controlled output shaping — Mongoose schemas apply custom serialization rules to ensure that only intended fields are exposed in API responses, while sensitive or internal data is omitted.
+    Strict mode — unknown or unexpected fields are ignored to protect the model against accidental or malicious data injection.
   </li>
   <li>
-    Data expiration — Time‑sensitive records are automatically removed via MongoDB TTL indexes, ensuring clean, up‑to‑date storage without any manual maintenance.
+    Unique indexes — structural database constraints that ensure uniqueness and prevent duplicated records.
+  </li>
+  <li>
+    Cross‑model relationships — references between models support relational consistency and enable cross‑entity access to connected data.
+  </li>
+  <li>
+     Controlled output shaping — custom serialization rules ensure that only intended fields are exposed in API responses, omitting sensitive or internal data.
+  </li>
+  <li>
+    Data expiration — time‑sensitive records are automatically removed using TTL indexes, keeping the database clean and storage‑efficient.
   </li>
 </ul>
 
