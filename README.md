@@ -116,6 +116,9 @@
   <li>
     Data expiration — time‑sensitive records are automatically removed using TTL indexes, keeping the database clean and storage‑efficient.
   </li>
+  <li>
+    Default values — predefined defaults provide consistent initialization of fields without relying on client input.
+  </li>
 </ul>
 
 <h2>Other Details</h2>
