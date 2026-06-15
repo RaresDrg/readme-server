@@ -135,4 +135,7 @@
   <li>
     Cursor‑based pagination — the API benefits from a cursor‑driven approach that keeps pagination stable and predictable as the dataset evolves, providing a more reliable way to navigate the data.
   </li>
+  <li>
+    Logging — structured request logging with custom formatting and selective route handling is combined with internal application logs to provide a clean, consistent and easy‑to‑debug production output.
+  </li>
 </ul>
