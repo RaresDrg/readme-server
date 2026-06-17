@@ -111,7 +111,7 @@
     Strict mode — unknown or unexpected fields are ignored to protect the model against accidental or malicious data injection.
   </li>
   <li>
-    Unique indexes — structural database constraints that ensure uniqueness and prevent duplicated records.
+    Unique indexes — structural database constraints that enforce uniqueness and prevent duplicated records.
   </li>
   <li>
     Cross‑model relationships — references between models support relational consistency and enable cross‑entity access to connected data.
@@ -133,9 +133,12 @@
     Environment guard — all environment variables are strictly validated at startup, preventing the server from running with missing or invalid configuration.
   </li>
   <li>
-    Cursor‑based pagination — the API benefits from a cursor‑driven approach that keeps pagination stable and predictable as the dataset evolves, providing a more reliable way to navigate the data.
+    Cursor‑based pagination — the API benefits from a cursor‑driven approach that keeps pagination stable and predictable as the dataset evolves, offering a more reliable way to navigate the data.
   </li>
   <li>
     Logging — structured request logging with custom formatting and selective route handling is combined with internal application logs to provide a clean, consistent and easy‑to‑debug production output.
+  </li>
+  <li>
+    Fallback 404 — any unmatched routes are captured by a global middleware that handles invalid requests and guides the client toward the API documentation.
   </li>
 </ul>
