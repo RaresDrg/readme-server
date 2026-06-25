@@ -83,12 +83,28 @@
 <h2>Auth & Session Management</h2>
 <ul>
   <li>
+    The authentication system is built around two distinct session types (auth and validation), each serving a specific role in securing user identity and sensitive operations.
+  </li>
+  <li>
+    Session storage relies on MongoDB TTL indexes as a stable alternative to Redis on Render’s read‑only free tier, ensuring automatic expiration and preventing stale sessions.
+  </li>
+  <li>
+    Auth session: (24 h)  — persistent session that maintains continuous user authentication.
+  </li>
+  <li>
+  </li>
+  <li>
+    Validation sessions: (15 min) — temporary sessions that enforce identity verification for critical actions.
+  </li>
+  <li>
+    Auth sessions: (24 h) — persistent sessions that maintain continuous user authentication, initiated after successful register, login, password updates, or Google OAuth, using the session utility to generate the access/refresh token pair stored in server‑side cookies and the session ID sent in request headers.
   </li>
 </ul>
 
 <h2>Security </h2>
 <ul>
   <li>
+    The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated through server‑side signatures, and rely on same‑origin requests for safe and predictable session handling.
   </li>
 </ul>
 
