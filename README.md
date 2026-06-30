@@ -83,28 +83,60 @@
 <h2>Auth & Session Management</h2>
 <ul>
   <li>
-    The authentication system is built around two distinct session types (auth and validation), each serving a specific role in securing user identity and sensitive operations.
+    The authentication system uses sessions instead of stateless JWTs to enable real invalidation, automatic rotation, secure renewal, and predictable control over authentication state.
   </li>
   <li>
-    Session storage relies on MongoDB TTL indexes as a stable alternative to Redis on Render’s read‑only free tier, ensuring automatic expiration and preventing stale sessions.
+    Sessions are stored in MongoDB, since Render’s free‑tier environment is read‑only and prevents Redis from writing to its in‑memory cache.
   </li>
   <li>
-    Auth session: (24 h)  — persistent session that maintains continuous user authentication.
+    The model includes a TTL index that automatically expires stale sessions, and a compound unique index (owner + type) that limits each user to one active session per type.
   </li>
   <li>
+    Each session type — auth and validation — has a specific security role and dedicated middleware responsible for enforcing it.
   </li>
   <li>
-    Validation sessions: (15 min) — temporary sessions that enforce identity verification for critical actions.
+    <b>Auth Session (24 h)</b>
+    <br>
+    <span>
+      – long‑lived session that maintains continuous user authentication.
+    </span>
+    <br>
+    <span>
+      – initiated after successful auth flows (register, login, password updates, Google OAuth).
+    </span>
+    <br>
+    <span>
+      – enforces a single active auth session per user, by replacing the previous one (if present).
+    </span>
+    <br>
+    <span>
+      – issues a secure access/refresh token pair stored in HTTP‑only cookies.
+    </span>
+    <br>
+    <span>
+      – exposes the session ID through response headers to enable browser tab isolation.
+    </span>
   </li>
   <li>
-    Auth sessions: (24 h) — persistent sessions that maintain continuous user authentication, initiated after successful register, login, password updates, or Google OAuth, using the session utility to generate the access/refresh token pair stored in server‑side cookies and the session ID sent in request headers.
+    <b>Auth Session Middleware</b>
+    <br>
+    <span>
+      – validates the active auth session on protected routes.
+    </span>
+    <br>
+    <span>
+      – reads the session ID from the Authorization header (&#96;Bearer &lt;sessionId&gt;&#96;).
+    </span>
   </li>
 </ul>
 
 <h2>Security </h2>
 <ul>
   <li>
-    The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated through server‑side signatures, and rely on same‑origin requests for safe and predictable session handling.
+    The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated through server‑side signatures, and rely on same‑origin requests for safe and predictable / protected session handling.
+  </li>
+  <li>
+    CORS
   </li>
 </ul>
 
