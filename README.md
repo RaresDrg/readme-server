@@ -94,6 +94,7 @@
   <li>
     Each session type — auth and validation — has a specific security role and dedicated middleware responsible for enforcing it.
   </li>
+  <br>
   <li>
     <b>Auth Session (24 h)</b>
     <br>
@@ -117,6 +118,7 @@
       – exposes the session ID through response headers to enable browser tab isolation.
     </span>
   </li>
+  <br>
   <li>
     <b>Auth Session Middleware</b>
     <br>
