@@ -83,18 +83,17 @@
 <h2>Auth & Session Management</h2>
 <ul>
   <li>
-    The authentication system uses sessions instead of stateless JWTs to enable real invalidation, automatic rotation, secure renewal, and predictable control over authentication state.
+    The authentication system uses server‑side sessions instead of stateless JWTs to avoid client‑side token persistence, enabling real‑time invalidation and predictable control over the authentication flow.
   </li>
   <li>
-    Sessions are stored in MongoDB, since Render’s free‑tier environment is read‑only and prevents Redis from writing to its in‑memory cache.
+    Sessions are stored in MongoDB because Render’s free‑tier environment is filesystem read‑only and prevents Redis from writing to its in‑memory cache.
   </li>
   <li>
-    The model includes a TTL index that automatically expires stale sessions, and a compound unique index (owner + type) that limits each user to one active session per type.
+    The model includes a TTL index that automatically expires stale sessions, and a compound unique index (owner + type) that limits the user to one active session per type.
   </li>
   <li>
-    Each session type — auth and validation — has a specific security role and dedicated middleware responsible for enforcing it.
+    Each session type — auth and validation — has a distinct security role and dedicated middleware responsible for enforcing it.
   </li>
-  <br>
   <li>
     <b>Auth Session (24 h)</b>
     <br>
@@ -107,7 +106,7 @@
     </span>
     <br>
     <span>
-      – enforces a single active auth session per user, by replacing the previous one (if present).
+      – replaces the previous auth session before creating a new one.
     </span>
     <br>
     <span>
@@ -115,19 +114,49 @@
     </span>
     <br>
     <span>
-      – exposes the session ID through response headers to enable browser tab isolation.
+      – exposes the session ID through response headers to facilitate browser tab isolation.
     </span>
   </li>
-  <br>
   <li>
     <b>Auth Session Middleware</b>
     <br>
     <span>
-      – validates the active auth session on protected routes.
+      – manages access to protected routes using the active auth session.
     </span>
     <br>
     <span>
-      – reads the session ID from the Authorization header (&#96;Bearer &lt;sessionId&gt;&#96;).
+      – extracts the session ID from the Authorization header and the token pair from signed cookies.
+    </span>
+    <br>
+    <span>
+      – validates the session by querying the database with the session ID and either the access or refresh token.
+    </span>
+    <br>
+    <span>
+      – when validation falls back to the refresh token, its single‑use nature triggers an automatic session renewal.
+    </span>
+    <br>
+    <span>
+      – if validation succeeds, the hydrated session owner is attached to the request for downstream handlers.  
+    </span>
+    <br>
+    <span>
+      – if validation fails, the middleware blocks access and responds with 401 Unauthorized.
+    </span>
+  </li>
+  <li>
+    <b>Validation session (15 min)</b>
+    <br>
+    <span>
+      –
+    </span>
+    <br>
+    <span>
+      – replaces the previous validation session before creating a new one.
+    </span>
+    <br>
+    <span>
+      –
     </span>
   </li>
 </ul>
