@@ -95,10 +95,10 @@
     Each session type — auth and validation — has a distinct security role and dedicated middleware responsible for enforcing it.
   </li>
   <li>
-    <b>Auth Session (24 h)</b>
+    <b>Auth Session</b>
     <br>
     <span>
-      – long‑lived session that maintains continuous user authentication.
+      – long‑lived session (24 h) that maintains continuous user authentication.
     </span>
     <br>
     <span>
@@ -106,7 +106,7 @@
     </span>
     <br>
     <span>
-      – replaces the previous auth session before creating a new one.
+      – removes the previous auth session before creating a new one.
     </span>
     <br>
     <span>
@@ -137,26 +137,53 @@
     </span>
     <br>
     <span>
-      – if validation succeeds, the hydrated session owner is attached to the request for downstream handlers.  
+      – on success, the hydrated session owner is attached to the request for downstream handlers.
     </span>
     <br>
     <span>
-      – if validation fails, the middleware blocks access and responds with 401 Unauthorized.
+      – on failure, the middleware blocks access and returns 401 Unauthorized.
     </span>
   </li>
   <li>
-    <b>Validation session (15 min)</b>
+    <b>Validation Session</b>
     <br>
     <span>
-      –
+      – short‑lived session (15 min) that enforces user identity verification.
     </span>
     <br>
     <span>
-      – replaces the previous validation session before creating a new one.
+      – initiated only when a sensitive account action begins (e.g., password resets).
     </span>
     <br>
     <span>
-      –
+      – removes the previous validation session before creating a new one.
+    </span>
+    <br>
+    <span>
+      – issues a one‑time validation token required to complete the action.
+    </span>
+  </li>
+  <li>
+    <b>Validation Session Middleware</b>
+    <br>
+    <span>
+      – controls the execution of sensitive account actions using the active validation session.
+    </span>
+    <br>
+    <span>
+      – extracts and verifies the validation token provided in the request body.
+    </span>
+    <br>
+    <span>
+      – retrieves the session from the database using the token and immediately consumes it for secure single‑use.
+    </span>
+    <br>
+    <span>
+      – on success, the hydrated session owner is attached to the request for downstream handlers.
+    </span>
+    <br>
+    <span>
+      – on failure, the middleware blocks execution and returns 404 NotFound.
     </span>
   </li>
 </ul>
