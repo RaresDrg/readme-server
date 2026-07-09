@@ -191,10 +191,13 @@
 <h2>Security </h2>
 <ul>
   <li>
-    The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated through server‑side signatures, and rely on same‑origin requests for safe and predictable / protected session handling.
+    The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated by server‑side signatures, and restricted to same‑origin requests.
   </li>
   <li>
-    CORS
+    CORS — cross‑origin access is enabled only in development, while production enforces a strict same‑origin model maintained through client‑side rewrites.
+  </li>
+  <li>
+    The server applies industry‑standard HTTP security headers through Helmet, providing baseline protection against common browser‑level attacks.
   </li>
 </ul>
 
