@@ -194,10 +194,16 @@
     The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated by server‑side signatures, and restricted to same‑origin requests.
   </li>
   <li>
-    CORS — cross‑origin access is enabled only in development, while production enforces a strict same‑origin model maintained through client‑side rewrites.
+    CORS — cross‑origin access is enabled only in development, while production operates under a strict same‑origin behavior and relies on client‑side rewrites to route all browser traffic to the backend.
   </li>
   <li>
-    The server applies industry‑standard HTTP security headers through Helmet, providing baseline protection against common browser‑level attacks.
+    Rate Limiting — the API enforces time‑based request limits to block brute‑force attempts, automated scans, and abusive traffic, preserving security and stability.
+  </li>
+  <li>
+    Password Hashing — user credentials are protected through bcrypt, which applies salted hashing to keep database storage safe and to reduce brute‑force risks.
+  </li>
+  <li>
+    Security Headers — the server uses Helmet to set industry‑standard HTTP security headers, adding baseline protection against common browser‑level attacks.
   </li>
 </ul>
 
