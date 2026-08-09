@@ -76,7 +76,7 @@
     Modular Routing — API routes are grouped into distinct modules based on their domain, keeping related endpoints together and the routing layer clean and scalable.
   </li>
   <li>
-    Centralized Error Handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses, providing uniform and human‑readable outputs.
+    Centralized Error Handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses and prevents any exposure of internal details or sensitive configuration data.
   </li>
 </ul>
 
@@ -197,7 +197,7 @@
     CORS — cross‑origin access is enabled only in development, while production operates under a strict same‑origin behavior and relies on client‑side rewrites to route all browser traffic to the backend.
   </li>
   <li>
-    Rate Limiting — the API enforces time‑based request limits to block brute‑force attempts, automated scans, and abusive traffic, preserving security and stability.
+    Rate Limiting — the API enforces time‑based request limits to block brute‑force attempts, automated scans, and abusive traffic, ensuring security and stability.
   </li>
   <li>
     Password Hashing — user credentials are protected through bcrypt, which applies salted hashing to keep database storage safe and to reduce brute‑force risks.
@@ -248,12 +248,24 @@
     Environment guard — all environment variables are strictly validated at startup, preventing the server from running with missing or invalid configuration.
   </li>
   <li>
-    Cursor‑based pagination — the API benefits from a cursor‑driven approach that keeps pagination stable and predictable as the dataset evolves, offering a more reliable way to navigate the data.
+    Logging — structured request logging (with custom formatting and selective route filtering) works alongside internal application logs to deliver a clean, easy‑to‑follow activity tracking flow.
   </li>
   <li>
-    Logging — structured request logging with custom formatting and selective route handling is combined with internal application logs to provide a clean, consistent and easy‑to‑debug production output.
+    Cache control — the API implements a no‑cache policy to prevent proxy or browser layers from serving stale responses.
   </li>
   <li>
-    Fallback 404 — any unmatched routes are captured by a global middleware that handles invalid requests and guides the client toward the API documentation.
+    Payload handling — incoming write operations accept only JSON payloads, with a strict size limit enforced to prevent excessive request bodies and potential memory abuse.
+  </li>
+  <li>
+    404 Fallback — unmatched routes fall back to a global middleware that returns a clear error response pointing clients toward the API documentation.
+  </li>
+  <li>
+    Unified response format — all responses follow a unified structure for both success and failure cases, providing consistent and human‑readable outputs.
+  </li>
+  <li>
+    Cursor‑based pagination — transaction queries use a cursor‑driven approach that keeps pagination stable as the dataset evolves, avoiding the structural limitations of offset‑based pagination.
+  </li>
+  <li>
+    External data caching — data sourced from external APIs is persisted in the database to reduce outbound requests, improve response times, and stay within third‑party usage limits.
   </li>
 </ul>
