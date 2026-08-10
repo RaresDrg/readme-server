@@ -260,9 +260,6 @@
     404 Fallback — unmatched routes fall back to a global middleware that returns a clear error response pointing clients toward the API documentation.
   </li>
   <li>
-    Unified response format — all responses follow a unified structure for both success and failure cases, providing consistent and human‑readable outputs.
-  </li>
-  <li>
     Cursor‑based pagination — transaction queries use a cursor‑driven approach that keeps pagination stable as the dataset evolves, avoiding the structural limitations of offset‑based pagination.
   </li>
   <li>
