@@ -67,16 +67,19 @@
     The architecture follows a modular REST API design, with a clear separation of concerns across the application.
   </li>
   <li>
-    Core logic is structured into dedicated layers, each with a single, well‑defined responsibility.
+    Core logic is organized into dedicated layers, each with a single, well‑defined responsibility.
   </li>
   <li>
-    Barrel files centralize exports, ensuring consistent and straightforward access to modules within each layer.
+    Barrel files centralize exports, providing consistent and straightforward access to modules within each layer.
   </li>
   <li>
-    Modular Routing — API routes are grouped into distinct modules based on their domain, keeping related endpoints together and the routing layer clean and scalable.
+    Modular routing — API routes are grouped into distinct modules based on their domain, keeping related endpoints together and the routing layer clean and scalable.
   </li>
   <li>
-    Centralized Error Handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses and prevents any exposure of internal details or sensitive configuration data.
+    Centralized error handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses and prevents any exposure of internal details or sensitive configuration data.
+  </li>
+  <li>
+    Unified response format — success and failure outputs are delivered through a unified response structure that ensures consistency and removes ambiguity across all API interactions.
   </li>
 </ul>
 
@@ -197,13 +200,13 @@
     CORS — cross‑origin access is enabled only in development, while production operates under a strict same‑origin behavior and relies on client‑side rewrites to route all browser traffic to the backend.
   </li>
   <li>
-    Rate Limiting — the API enforces time‑based request limits to block brute‑force attempts, automated scans, and abusive traffic, ensuring security and stability.
+    Rate limiting — the API enforces time‑based request limits to block brute‑force attempts, automated scans, and abusive traffic, ensuring security and stability.
   </li>
   <li>
-    Password Hashing — user credentials are protected through bcrypt, which applies salted hashing to keep database storage safe and to reduce brute‑force risks.
+    Password hashing — user credentials are protected through bcrypt, which applies salted hashing to keep database storage safe and to reduce brute‑force risks.
   </li>
   <li>
-    Security Headers — the server uses Helmet to set industry‑standard HTTP security headers, adding baseline protection against common browser‑level attacks.
+    Security headers — the server uses Helmet to set industry‑standard HTTP security headers, adding baseline protection against common browser‑level attacks.
   </li>
 </ul>
 
@@ -223,22 +226,19 @@
 <h2>Data Model</h2>
 <ul>
   <li>
-    Strict mode — unknown or unexpected fields are ignored to protect the model against accidental or malicious data injection.
+    Strict mode — unknown or unexpected fields are ignored to prevent accidental or malicious data injection.
   </li>
   <li>
-    Unique indexes — structural database constraints that enforce uniqueness and prevent duplicated records.
+    Unique indexes — database‑level constraints enforce uniqueness and reject duplicate records.
   </li>
   <li>
-    Cross‑model relationships — references between models support relational consistency and enable cross‑entity access to connected data.
+    TTL indexes — time‑sensitive records are automatically removed to keep database clean and storage‑efficient.
   </li>
   <li>
-    Controlled output shaping — custom serialization rules ensure that only intended fields are exposed in API responses, omitting sensitive or internal data.
+    Cross-model relationships — model references connect related entities for structured relational data access.
   </li>
   <li>
-    Data expiration — time‑sensitive records are automatically removed using TTL indexes, keeping the database clean and storage‑efficient.
-  </li>
-  <li>
-    Default values — predefined defaults provide consistent initialization of fields without relying on client input.
+    Controlled output shaping — serialization rules expose only approved fields and omit sensitive or internal data.
   </li>
 </ul>
 
@@ -248,7 +248,7 @@
     Environment guard — all environment variables are strictly validated at startup, preventing the server from running with missing or invalid configuration.
   </li>
   <li>
-    Logging — structured request logging (with custom formatting and selective route filtering) works alongside internal application logs to deliver a clean, easy‑to‑follow activity tracking flow.
+    Logging — structured request logging (with custom formatting and selective route filtering) works alongside internal application logs to deliver a clean, easy‑to‑follow activity trail.
   </li>
   <li>
     Cache control — the API implements a no‑cache policy to prevent proxy or browser layers from serving stale responses.
