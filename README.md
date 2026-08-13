@@ -235,7 +235,7 @@
     TTL indexes — time‑sensitive records are automatically removed to keep database clean and storage‑efficient.
   </li>
   <li>
-    Cross-model relationships — model references connect related entities for structured relational data access.
+    Cross-model relationships — model references connect related entities for structured data access.
   </li>
   <li>
     Controlled output shaping — serialization rules expose only approved fields and omit sensitive or internal data.
