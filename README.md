@@ -1,32 +1,52 @@
-<h1 align='center'>Frontend Documentation</h1>
+<h1 align='center'>Backend Documentation</h1>
 <br>
 
 <h2>Technologies</h2>
 <ul>
-  <li>React</li>
+  <li>Node.js</li>
+  <li>Express</li>
   <li>TypeScript</li>
-  <li>Redux Toolkit</li>
-  <li>Styled Components</li>
+  <li>MongoDB</li>
+  <li>Mongoose</li>
+</ul>
+
+<h2>Tools</h2>
+<ul>
+  <li>
+    MongoDB Atlas — cloud service for hosting and managing the production database.
+  </li>
+  <li>
+    Resend — email delivery service with custom HTML templates.
+  </li>
+  <li>
+    Google Cloud Platform — authentication setup for Google sign‑in integration.
+  </li>
+  <li>
+    Open Exchange Rates — external API for fetching real‑time currency exchange rates.
+  </li>
+  <li>
+    Swagger — interactive documentation interface for all API routes and data models.
+  </li>
+  <li>
+    Postman — testing environment for validating and debugging all API endpoints.
+  </li>
 </ul>
 
 <h2>Deploy</h2>
 <ul>
   <li>
-    Render — hosting for the frontend as a static site.
+    Render — hosting for the backend as a web service.
   </li>
   <li>
-    All <code>/api/*</code> requests are forwarded to the backend via reverse proxy, ensuring same‑origin communication.
+    The configuration includes the closest available region for reduced latency, production environment variables for secure secret handling, and a <code>/health-check</code> route for internal service checks.
   </li>
   <li>
-    All non‑API routes are rewritten to <code>/index.html</code>, enabling the SPA to manage client‑side routing.
+    UptimeRobot — external uptime monitoring that keeps the server awake and prevents cold starts.
   </li>
 </ul>
 
 <h2>Setup</h2>
 <ul>
-  <li>
-    Vite — provides fast project setup and optimized production builds.  
-  </li>
   <li>
     TypeScript config — enforces strict type‑checking and improves project stability.
   </li>
@@ -36,138 +56,213 @@
   <li>
     Prettier — ensures uniform formatting across the entire codebase.
   </li>
+  <li>
+    Nodemon — improves development with automatic server restarts and debugging support.
+  </li>
 </ul>
 
 <h2>Architecture</h2>
 <ul>
   <li>
-    The architecture follows a clean, modular structure with a clear separation of concerns across the application.
+    The architecture follows a modular REST API design, with a clear separation of concerns across the application.
   </li>
   <li>
-    Core logic is structured in responsibility‑based folders, with related functionality grouped consistently.
+    Core logic is organized into dedicated layers, each with a single, well‑defined responsibility.
   </li>
   <li>
-    Barrel files centralize exports, providing consistent and straightforward access to modules within each folder.
-  </li>
-  <li></li>
-  <li>
-    Global UI elements — modals, loaders, notifications — are mounted through dedicated portal roots to avoid interfering with the main layout, and they operate independently from the route‑level rendering tree.
+    Barrel files centralize exports, providing consistent and straightforward access to modules within each layer.
   </li>
   <li>
-    Responsive Context — a global context exposes device type and pixel density, allowing components to adapt layout, assets, and behavior dynamically.
+    Modular routing — API routes are grouped into distinct modules based on their domain, keeping related endpoints together and the routing layer clean and scalable.
+  </li>
+  <li>
+    Centralized error handling — all errors are funneled into a global middleware that acts as the single source of truth for failure responses and prevents any exposure of internal details or sensitive configuration data.
+  </li>
+  <li>
+    Unified response format — success and failure outputs are delivered through a unified response structure that ensures consistency and removes ambiguity across all API interactions.
   </li>
 </ul>
 
-<h2>UX & Accessibility</h2>
+<h2>Auth & Session Management</h2>
 <ul>
   <li>
-    LQIP Approach — blurred low‑quality previews improve perceived loading speed and provide a smoother visual transition.
+    The authentication system uses server‑side sessions instead of stateless JWTs to avoid client‑side token persistence, enabling real‑time invalidation and predictable control over the authentication flow.
   </li>
   <li>
-    Loading indicators integrated throughout the interface clarify ongoing processes and keep the experience predictable.
+    Sessions are stored in MongoDB because Render’s free‑tier environment is filesystem read‑only and prevents Redis from writing to its in‑memory cache.
   </li>
   <li>
-    Notifications deliver immediate feedback for key user actions, helping maintain clarity and reducing uncertainty.
+    The model includes a TTL index that automatically expires stale sessions, and a compound unique index (owner + type) that limits the user to one active session per type.
   </li>
   <li>
-    Transitions shape a smoother interaction flow and keep the interface fluid and natural.
+    Each session type — auth and validation — has a distinct security role and dedicated middleware responsible for enforcing it.
   </li>
   <li>
-    Animations enhance visual perception and make interactions feel more dynamic and engaging.
+    <b>Auth Session</b>
+    <br>
+    <span>
+      – long‑lived session (24 h) that maintains continuous user authentication.
+    </span>
+    <br>
+    <span>
+      – initiated after successful auth flows (register, login, password updates, Google OAuth).
+    </span>
+    <br>
+    <span>
+      – removes the previous auth session before creating a new one.
+    </span>
+    <br>
+    <span>
+      – issues a secure access/refresh token pair stored in HTTP‑only cookies.
+    </span>
+    <br>
+    <span>
+      – exposes the session ID through response headers to facilitate browser tab isolation.
+    </span>
   </li>
   <li>
-    Semantic roles and live regions are applied across the interface to ensure proper announcements and accessible navigation for assistive technologies.
+    <b>Auth Session Middleware</b>
+    <br>
+    <span>
+      – manages access to protected routes using the active auth session.
+    </span>
+    <br>
+    <span>
+      – extracts the session ID from the Authorization header and the token pair from signed cookies.
+    </span>
+    <br>
+    <span>
+      – validates the session by querying the database with the session ID and either the access or refresh token.
+    </span>
+    <br>
+    <span>
+      – when validation falls back to the refresh token, its single‑use nature triggers an automatic session renewal.
+    </span>
+    <br>
+    <span>
+      – on success, the hydrated session owner is attached to the request for downstream handlers.
+    </span>
+    <br>
+    <span>
+      – on failure, the middleware blocks access and returns 401 Unauthorized.
+    </span>
   </li>
   <li>
-    Keyboard navigation is fully supported, with clear focus-visible states that keep interactions predictable and accessible.
+    <b>Validation Session</b>
+    <br>
+    <span>
+      – short‑lived session (15 min) that enforces user identity verification.
+    </span>
+    <br>
+    <span>
+      – initiated only when a sensitive account action begins (e.g., password resets).
+    </span>
+    <br>
+    <span>
+      – removes the previous validation session before creating a new one.
+    </span>
+    <br>
+    <span>
+      – issues a one‑time validation token required to complete the action.
+    </span>
   </li>
   <li>
-    Modal interactions follow accessible patterns, including controlled focus behavior, consistent dismissal rules, and full isolation from the underlying layout.
-  </li>
-  <li>
-    Form behavior provides a clear and guided submission flow, helping users enter information confidently while the interface manages validation, limits, and action availability.
+    <b>Validation Session Middleware</b>
+    <br>
+    <span>
+      – controls the execution of sensitive account actions using the active validation session.
+    </span>
+    <br>
+    <span>
+      – extracts and verifies the validation token provided in the request body.
+    </span>
+    <br>
+    <span>
+      – retrieves the session from the database using the token and immediately consumes it for secure single‑use.
+    </span>
+    <br>
+    <span>
+      – on success, the hydrated session owner is attached to the request for downstream handlers.
+    </span>
+    <br>
+    <span>
+      – on failure, the middleware blocks execution and returns 404 NotFound.
+    </span>
   </li>
 </ul>
 
-<h2>UI & Styling</h2>
+<h2>Security </h2>
 <ul>
   <li>
-    Styling is managed with styled‑components, providing predictable behavior, clean component structure, and scoped styles. 
+    The authentication process is secured through hardened session cookies that are protected against JavaScript access, transmitted only over HTTPS, validated by server‑side signatures, and restricted to same‑origin requests.
   </li>
   <li>
-    Cross‑browser compatibility is achieved through modern‑normalize, custom reset rules, and manual vendor prefixes for consistent rendering across browsers.
+    CORS — cross‑origin access is enabled only in development, while production operates under a strict same‑origin behavior and relies on client‑side rewrites to route all browser traffic to the backend.
   </li>
   <li>
-    Responsive Design — built on a mobile‑first foundation, the interface adapts seamlessly across devices and screen sizes.
+    Rate limiting — the API enforces time‑based request limits to block brute‑force attempts, automated scans, and abusive traffic, ensuring security and stability.
   </li>
   <li>
-    Responsive Assets — images are served in 1x/2x resolutions and breakpoint‑specific variants for optimal visual quality on all displays.
+    Password hashing — user credentials are protected through bcrypt, which applies salted hashing to keep database storage safe and to reduce brute‑force risks.
   </li>
   <li>
-    Images are manually optimized with Squoosh, converted to modern WebP formats, and compressed to achieve a balanced quality–size ratio.
-  </li>
-  <li>
-    Videos are processed with HandBrake and re‑encoded using H.264 to ensure reduced file size and reliable cross‑browser playback.
-  </li>
-  <li>
-    Media Delivery — all media assets are delivered through Cloudinary, benefiting from automatic format optimization, smart compression, and CDN‑level performance.
-  </li>
-  <li>
-    Sprite Technique — all vector icons are consolidated into a single SVG sprite to reduce network requests and keep icon management consistent and efficient.
+    Security headers — the server uses Helmet to set industry‑standard HTTP security headers, adding baseline protection against common browser‑level attacks.
   </li>
 </ul>
 
-<h2>Routing</h2>
+<h2>Validation</h2>
 <ul>
   <li>
-    The project runs as a Single Page Application, with React Router managing all client‑side navigation.
+    The validation strategy follows a two-layer approach designed to validate client input and preserve database integrity.
   </li>
   <li>
-    Restricted Routes — pages accessible only when the user is not authenticated, with a redirect guard preventing access once a session is active.
+    Layer 1: Request validation — all incoming client input (body, query, params) is validated through a centralized and dynamic Joi schema system, acting as the first layer of protection and rejecting invalid or incomplete data before it reaches the business logic.
   </li>
   <li>
-    Protected Routes — core application pages become available only after authentication, and unauthorized access is automatically redirected to the login flow.
-  </li>
-  <li>
-    Fallback Route — any unmatched path is routed to a dedicated Not Found page, ensuring consistent handling of invalid URLs.
+    Layer 2: Database validation — Mongoose model‑level rules add an additional protection layer that guarantees data integrity through strict constraints, enums, conditional requirements, custom validators and type‑safe limits, preventing invalid or inconsistent records from ever being persisted.
   </li>
 </ul>
 
-<h2>State Management</h2>
+<h2>Data Model</h2>
 <ul>
   <li>
-    Redux — manages the application’s global state in a centralized way.
+    Strict mode — unknown or unexpected fields are ignored to prevent accidental or malicious data injection.
   </li>
   <li>
-    Redux Toolkit — simplifies the Redux setup with slice‑based logic and reduced boilerplate.
+    Unique indexes — database‑level constraints enforce uniqueness and reject duplicate records.
   </li>
   <li>
-    Redux Persist — persists the application state across sessions and page reloads.
-  </li>
-</ul>
-
-<h2>API Layer</h2>
-<ul>   
-  <li>
-    The API layer operates through an Axios instance that handles all backend requests, configured with a baseURL and credential support for authenticated communication.
+    TTL indexes — time‑sensitive records are automatically removed to keep database clean and storage‑efficient.
   </li>
   <li>
-    Request Interceptor — looks for a session token in session storage and, if present, includes it in the Authorization header as a Bearer token.
+    Cross-model relationships — model references connect related entities for structured relational data access.
   </li>
   <li>
-    Response Interceptor — stores the session token if the server returns one and triggers an automatic logout when a 401 error occurs.
-  </li>
-  <li>
-    Session Logic — the server issues secure HTTP‑Only cookies to handle authentication and assigns each browser tab a unique session identifier, ensuring a single active session per user and proper isolation across tabs.
+    Controlled output shaping — serialization rules expose only approved fields and omit sensitive or internal data.
   </li>
 </ul>
 
 <h2>Other Details</h2>
 <ul>
   <li>
-    Local caching applies user ownership and TTL‑based invalidation to maintain fresh, isolated, and reliable client‑side data.
+    Environment guard — all environment variables are strictly validated at startup, preventing the server from running with missing or invalid configuration.
   </li>
   <li>
-    Font and media delivery are optimized through preconnect and DNS-prefetch directives, reducing latency for Google Fonts and Cloudinary assets.
+    Logging — structured request logging (with custom formatting and selective route filtering) works alongside internal application logs to deliver a clean, easy‑to‑follow activity trail.
+  </li>
+  <li>
+    Cache control — the API implements a no‑cache policy to prevent proxy or browser layers from serving stale responses.
+  </li>
+  <li>
+    Payload handling — incoming write operations accept only JSON payloads, with a strict size limit enforced to prevent excessive request bodies and potential memory abuse.
+  </li>
+  <li>
+    404 Fallback — unmatched routes fall back to a global middleware that returns a clear error response pointing clients toward the API documentation.
+  </li>
+  <li>
+    Cursor‑based pagination — transaction queries use a cursor‑driven approach that keeps pagination stable as the dataset evolves, avoiding the structural limitations of offset‑based pagination.
+  </li>
+  <li>
+    External data caching — data sourced from external APIs is persisted in the database to reduce outbound requests, improve response times, and stay within third‑party usage limits.
   </li>
 </ul>
